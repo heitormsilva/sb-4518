@@ -1,0 +1,21 @@
+services:
+  mysql-8:
+    image: 'mysql:8'
+    profiles: [ 'dev' ]
+    environment:
+      - 'MYSQL_DATABASE=gtfs'
+      - 'MYSQL_ROOT_PASSWORD=root'
+      - 'TZ: America/Sao_Paulo'
+    ports:
+      - '13306:3306'
+    volumes:
+      - mysql:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+volumes:
+  mysql:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ~/dev/db/mysql/8/data

@@ -1,0 +1,51 @@
+spring:
+  docker.compose.enabled: false
+  jpa:
+    generate-ddl: false
+    properties:
+      hibernate:
+        jdbc.batch_size: 10
+        order_inserts: true
+        implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+
+app:
+  batch.page-size: 1000
+
+---
+
+spring:
+  config.activate.on-profile: dev
+  docker:
+    compose:
+      enabled: true
+      profiles.active: dev
+      lifecycle-management: start-only
+
+---
+
+spring:
+  config.activate.on-profile: test
+  batch:
+    jdbc.initialize-schema: never
+    job.enabled: false
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+
+---
+
+spring:
+  config.activate.on-profile: test-it
+  jpa:
+    generate-ddl: true
+  batch:
+    job.enabled: false
+
+app:
+  datasource:
+    gtfs:
+      url: jdbc:h2:mem:gtfs;DB_CLOSE_DELAY=-1
+      username: sa
